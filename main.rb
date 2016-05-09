@@ -11,4 +11,12 @@ require_relative 'book.rb'
 leon = Movie.new(550, 4)
 leon.update(:title => "Леон", :producer_name => "Люк Бессон", :year => "1994")
 
-puts "Фильм Леон все ещё стоит: #{leon.price} руб."
+tom = Book.new(349, 10)
+tom.update(:title => "Приключения Тома Сойера", :author_name => "Марк Твен")
+
+judas = Music.new(590, 10)
+judas.update(:album_name => "Turbo", :artist_name => "Judas Priest", :genre => "Heavy Metal")
+
+puts leon.show
+puts tom.show
+puts judas.show

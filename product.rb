@@ -9,4 +9,12 @@ class Product
   # Abstract method
   def update
   end
+
+  # Abstract method
+  def info
+  end
+
+  def show
+    "#{info} - #{price} руб. [осталось: #{@product_quantity}]"
+  end
 end
