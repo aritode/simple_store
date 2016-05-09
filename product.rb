@@ -5,4 +5,8 @@ class Product
     @price = price
     @product_quantity = product_quantity
   end
+
+  # Abstract method
+  def update
+  end
 end
