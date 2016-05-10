@@ -19,19 +19,25 @@ class Product
   end
 
   def self.showcase(products)
-    puts "Что хотите купить?"
+    puts 'Что хотите купить?'
     puts
     products.each_with_index { |item, idx| puts "#{idx}: #{item.show}" }
+    puts '----------------------------------------'
+    puts 'q. Закончить покупки и произвести расчёт'
     puts
   end
 
   def buy
     if @product_quantity > 0
+      puts '***'
       puts "Вы купили товар: #{info}"
+      puts '***'
+      puts
       @product_quantity -= 1
       price
     else
-      puts "Товар закончился"
+      puts 'Товар закончился'
+      puts
       0
     end
   end
