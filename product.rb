@@ -1,3 +1,6 @@
+require 'rexml/document'
+include REXML
+
 class Product
   attr_reader :price
 
@@ -40,5 +43,56 @@ class Product
       puts
       0
     end
+  end
+
+  def self.read_from_xml(file_name)
+    file_path = File.dirname(__FILE__) + "/" + file_name
+
+    abort "Файл #{file_name} не найден!" unless File.exist?(file_path)
+
+    xmlfile = File.new(file_path, "r:UTF-8")
+    xmldoc = Document.new(xmlfile)
+    xmlfile.close
+
+    result = []
+    product = nil
+
+    XPath.each(xmldoc, "//product") do |product_node|
+    # Left for educational purposes
+    # xmldoc.elements.each("products/product") do |product_node|
+    # xmldoc.root.elements.each("product") do |product_node|
+      price = product_node.attributes["price"].to_i
+      quantity = product_node.attributes["amount_available"].to_i
+
+      product_node.each_element("movie") do |e|
+        product = Movie.new(price, quantity)
+        product.update(
+            title: e.attributes["title"],
+            year: e.attributes["year"],
+            producer_name: e.attributes["director_name"]
+        )
+      end
+
+      product_node.each_element("book") do |e|
+        product = Book.new(price, quantity)
+        product.update(
+            title: e.attributes["title"],
+            author_name: e.attributes["author_name"]
+        )
+      end
+
+      product_node.each_element("disk") do |e|
+        product = Music.new(price, quantity)
+        product.update(
+            album_name: e.attributes["album_name"],
+            artist_name: e.attributes["artist_name"],
+            genre: e.attributes["genre"]
+        )
+      end
+
+      result << product
+    end
+
+    return result
   end
 end
