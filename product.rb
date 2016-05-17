@@ -46,21 +46,12 @@ class Product
   end
 
   def self.read_from_xml(file_name)
-    file_path = File.dirname(__FILE__) + "/" + file_name
-
-    abort "Файл #{file_name} не найден!" unless File.exist?(file_path)
-
-    xmlfile = File.new(file_path, "r:UTF-8")
-    xmldoc = Document.new(xmlfile)
-    xmlfile.close
+    xmldoc = open_xml_file(file_name)
 
     result = []
     product = nil
 
     XPath.each(xmldoc, "//product") do |product_node|
-    # Left for educational purposes
-    # xmldoc.elements.each("products/product") do |product_node|
-    # xmldoc.root.elements.each("product") do |product_node|
       price = product_node.attributes["price"].to_i
       quantity = product_node.attributes["amount_available"].to_i
 
@@ -93,6 +84,49 @@ class Product
       result << product
     end
 
-    return result
+    result
+  end
+
+  def self.product_types
+    [Book, Movie, Music]
+  end
+
+  # Abstract method
+  def read_from_console
+  end
+
+  def to_xml
+    element = Element.new('product')
+    element.attributes["price"] = @price
+    element.attributes["amount_available"] = @product_quantity
+    element
+  end
+
+  def save_to_xml(file_name)
+    xmldoc = Product.open_xml_file(file_name)
+
+    file_path = Product.file_check(file_name)
+    file = File.new(file_path, "w:UTF-8")
+    xmldoc.root.add_element(self.to_xml)
+    xmldoc.write(file, 2)
+    file.close
+
+    puts 'Продукт успешно добавлен!'
+  end
+
+  def self.open_xml_file(file_name)
+    file_path = file_check(file_name)
+
+    xmlfile = File.new(file_path, "r:UTF-8")
+    xmldoc = Document.new(xmlfile)
+    xmlfile.close
+
+    xmldoc
+  end
+
+  def self.file_check(file_name)
+    file_path = File.dirname(__FILE__) + "/" + file_name
+    abort "Файл #{file_name} не найден!" unless File.exist?(file_path)
+    file_path
   end
 end
